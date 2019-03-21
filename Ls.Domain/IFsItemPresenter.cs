@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Ls.Domain.Tests
+namespace Ls.Domain
 {
-    public interface IPresenter
+    public interface IFsItemPresenter
     {
         void Respond(IEnumerable<IFsItem> output);
     }

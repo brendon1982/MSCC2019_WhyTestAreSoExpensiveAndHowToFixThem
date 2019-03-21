@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Ls.Domain.Tests
+namespace Ls.Domain
 {
     public interface IFileSystemGateway
     {

@@ -1,4 +1,4 @@
-﻿namespace Ls.Domain.Tests
+﻿namespace Ls.Domain
 {
     public interface IFsItem
     {
