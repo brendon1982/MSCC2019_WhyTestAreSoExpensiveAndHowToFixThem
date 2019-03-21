@@ -86,7 +86,7 @@ namespace Ls.Domain.Tests
         public class OnlyDirectoriesInPath
         {
             [Test]
-            public void ShouldRespondWithTheFiles()
+            public void ShouldRespondWithTheDirectories()
             {
                 // Arrange
                 var path = "Z:\\";
@@ -114,7 +114,7 @@ namespace Ls.Domain.Tests
             }
 
             [Test]
-            public void WhenFilesNotInAlphabeticalOrder_ShouldRespondWithTheFilesInAlphabeticalOrder()
+            public void WhenFilesNotInAlphabeticalOrder_ShouldRespondWithTheDirectoriesInAlphabeticalOrder()
             {
                 // Arrange
                 var path = "X:\\somewhere_else";
@@ -140,6 +140,41 @@ namespace Ls.Domain.Tests
                     fsItems.ElementAt(1).Name == "memes" &&
                     fsItems.ElementAt(2).Name == "notes" &&
                     fsItems.ElementAt(3).Name == "zebras"
+                ));
+            }
+        }
+
+        [TestFixture]
+        public class FilesAndDirectoriesInPath
+        {
+            [Test]
+            public void ShouldRespondWithFilesAndDirectoriesInAlphabeticalOrder()
+            {
+                // Arrange
+                var path = "M:\\documents";
+
+                var presenter = Substitute.For<IFsItemPresenter>();
+
+                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
+                fileSystemGateway.Files(path).Returns(new List<FsFile>{
+                    new FsFile { Name = "stuff.txt" },
+                    new FsFile { Name = "games.exe" }
+                });
+                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>{
+                    new FsDirectory { Name = "unconference" },
+                    new FsDirectory { Name = "conference" }
+                });
+
+                var lsUseCase = new LsUseCase(fileSystemGateway);
+                // Act
+                lsUseCase.Execute(path, presenter);
+                // Assert
+                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems =>
+                    fsItems.Count() == 4 &&
+                    fsItems.ElementAt(0).Name == "conference" &&
+                    fsItems.ElementAt(1).Name == "games.exe" &&
+                    fsItems.ElementAt(2).Name == "stuff.txt" &&
+                    fsItems.ElementAt(3).Name == "unconference"
                 ));
             }
         }

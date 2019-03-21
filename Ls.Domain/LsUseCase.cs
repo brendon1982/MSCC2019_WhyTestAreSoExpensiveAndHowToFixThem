@@ -15,16 +15,15 @@ namespace Ls.Domain
         {
             var files = _fileSystemGateway
                 .Files(path)
-                .OfType<IFsItem>()
-                .OrderBy(file => file.Name);
+                .OfType<IFsItem>();
 
             var directories = _fileSystemGateway
                 .Directories(path)
-                .OfType<IFsItem>()
-                .OrderBy(file => file.Name);
+                .OfType<IFsItem>();
 
             var fsItems = files
-                .Concat(directories);
+                .Concat(directories)
+                .OrderBy(item => item.Name);
 
             presenter.Respond(fsItems);
         }
