@@ -82,7 +82,31 @@ namespace Ls.Domain.Tests
             }
         }
 
+        [TestFixture]
+        public class NoFilesAndNoDirectoriesInPath
+        {
+            [Test]
+            public void ShouldRespondWithNoFsItems()
+            {
+                // Arrange
+                var path = "E:\\";
+
+                var presenter = Substitute.For<IFsItemPresenter>();
+
+                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
+                fileSystemGateway.Files(path).Returns(new List<FsFile>());
+                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>());
+
+                var lsUseCase = new LsUseCase(fileSystemGateway);
+                // Act
+                lsUseCase.Execute(path, presenter);
+                // Assert
+                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems =>
+                    !fsItems.Any()
+                ));
+            }
+        }
+
         // TODO Only directories in path
-        // TODO Nothing in path
     }
 }
