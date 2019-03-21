@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Ls.Domain
 {
@@ -16,9 +15,18 @@ namespace Ls.Domain
         {
             var files = _fileSystemGateway
                 .Files(path)
+                .OfType<IFsItem>()
                 .OrderBy(file => file.Name);
 
-            presenter.Respond(files);
+            var directories = _fileSystemGateway
+                .Directories(path)
+                .OfType<IFsItem>()
+                .OrderBy(file => file.Name);
+
+            var fsItems = files
+                .Concat(directories);
+
+            presenter.Respond(fsItems);
         }
     }
 }

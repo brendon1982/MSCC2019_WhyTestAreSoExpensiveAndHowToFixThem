@@ -83,6 +83,68 @@ namespace Ls.Domain.Tests
         }
 
         [TestFixture]
+        public class OnlyDirectoriesInPath
+        {
+            [Test]
+            public void ShouldRespondWithTheFiles()
+            {
+                // Arrange
+                var path = "Z:\\";
+
+                var presenter = Substitute.For<IFsItemPresenter>();
+
+                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
+                fileSystemGateway.Files(path).Returns(new List<FsFile>());
+                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>{
+                    new FsDirectory { Name = "cake recipes" },
+                    new FsDirectory { Name = "code" },
+                    new FsDirectory { Name = "talks" }
+                });
+
+                var lsUseCase = new LsUseCase(fileSystemGateway);
+                // Act
+                lsUseCase.Execute(path, presenter);
+                // Assert
+                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems =>
+                    fsItems.Count() == 3 &&
+                    fsItems.ElementAt(0).Name == "cake recipes" &&
+                    fsItems.ElementAt(1).Name == "code" &&
+                    fsItems.ElementAt(2).Name == "talks"
+                ));
+            }
+
+            [Test]
+            public void WhenFilesNotInAlphabeticalOrder_ShouldRespondWithTheFilesInAlphabeticalOrder()
+            {
+                // Arrange
+                var path = "X:\\somewhere_else";
+
+                var presenter = Substitute.For<IFsItemPresenter>();
+
+                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
+                fileSystemGateway.Files(path).Returns(new List<FsFile>());
+                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>{
+                    new FsDirectory { Name = "notes" },
+                    new FsDirectory { Name = "zebras" },
+                    new FsDirectory { Name = "memes" },
+                    new FsDirectory { Name = "books" }
+                });
+
+                var lsUseCase = new LsUseCase(fileSystemGateway);
+                // Act
+                lsUseCase.Execute(path, presenter);
+                // Assert
+                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems =>
+                    fsItems.Count() == 4 &&
+                    fsItems.ElementAt(0).Name == "books" &&
+                    fsItems.ElementAt(1).Name == "memes" &&
+                    fsItems.ElementAt(2).Name == "notes" &&
+                    fsItems.ElementAt(3).Name == "zebras"
+                ));
+            }
+        }
+
+        [TestFixture]
         public class NoFilesAndNoDirectoriesInPath
         {
             [Test]
