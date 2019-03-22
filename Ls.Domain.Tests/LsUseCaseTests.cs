@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NSubstitute;
 using NUnit.Framework;
@@ -159,7 +158,7 @@ namespace Ls.Domain.Tests
                 fileSystemGateway.Files(path).Returns(new List<FsFile>{
                     new FsFile { Name = "stuff.txt" },
                     new FsFile { Name = "games.exe" }
-                });
+                }); 
                 fileSystemGateway.Directories(path).Returns(new List<FsDirectory>{
                     new FsDirectory { Name = "unconference" },
                     new FsDirectory { Name = "conference" }
