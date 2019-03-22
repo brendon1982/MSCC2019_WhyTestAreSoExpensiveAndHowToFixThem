@@ -2,6 +2,10 @@
 {
     public class FsDirectory : IFsItem
     {
-        public string Name { get; set; }
+        public FsDirectory(string name)
+        {
+            Name = name;
+        }
+        public string Name { get; }
     }
 }
