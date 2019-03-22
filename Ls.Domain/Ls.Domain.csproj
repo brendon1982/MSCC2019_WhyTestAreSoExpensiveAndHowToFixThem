@@ -4,4 +4,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="PeanutButter.RandomGenerators" Version="1.2.259" />
+  </ItemGroup>
+
 </Project>
