@@ -17,10 +17,7 @@
 
         public FsDirectory Build()
         {
-            return new FsDirectory
-            {
-                Name = _name
-            };
+            return new FsDirectory(_name);
         }
     }
 }
