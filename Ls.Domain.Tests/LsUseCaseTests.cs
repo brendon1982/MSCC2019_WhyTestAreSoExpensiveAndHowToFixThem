@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Ls.Domain.Tests.Builders;
 using NSubstitute;
@@ -160,7 +159,7 @@ namespace Ls.Domain.Tests
                 fileSystemGateway.Files(path).Returns(new List<FsFile>{
                     FsFileTestDataBuilder.Create().WithName("stuff.exe").Build(),
                     FsFileTestDataBuilder.Create().WithName("games.exe").Build()
-                });
+                }); 
                 fileSystemGateway.Directories(path).Returns(new List<FsDirectory>{
                     FsDirectoryTestDataBuilder.Create().WithName("unconference").Build(),
                     FsDirectoryTestDataBuilder.Create().WithName("conference").Build()
