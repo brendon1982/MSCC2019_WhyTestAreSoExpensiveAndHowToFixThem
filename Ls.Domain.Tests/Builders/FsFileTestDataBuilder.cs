@@ -17,10 +17,7 @@
 
         public FsFile Build()
         {
-            return new FsFile
-            {
-                Name = _name
-            };
+            return new FsFile(_name);
         }
     }
 }
