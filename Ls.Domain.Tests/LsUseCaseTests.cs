@@ -227,7 +227,7 @@ namespace Ls.Domain.Tests
 
                 var log = Substitute.For<ILog>();
 
-                var lsUseCase = new LsUseCase(fileSystemGateway, log);
+                var lsUseCase = CreateLsUseCase(fileSystemGateway, log);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
@@ -237,7 +237,12 @@ namespace Ls.Domain.Tests
 
         private static LsUseCase CreateLsUseCase(IFileSystemGateway fileSystemGateway)
         {
-            return new LsUseCase(fileSystemGateway);
+            return CreateLsUseCase(fileSystemGateway, Substitute.For<ILog>());
+        }
+
+        private static LsUseCase CreateLsUseCase(IFileSystemGateway fileSystemGateway, ILog log)
+        {
+            return new LsUseCase(fileSystemGateway, log);
         }
     }
 }
