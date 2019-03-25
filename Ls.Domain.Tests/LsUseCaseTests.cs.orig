@@ -209,10 +209,12 @@ namespace Ls.Domain.Tests
                 ));
             }
         }
-        
+<<<<<<< HEAD
+=======
         private static LsUseCase CreateLsUseCase(IFileSystemGateway fileSystemGateway)
         {
             return new LsUseCase(fileSystemGateway);
         }
+>>>>>>> 53fab31... Added private factory method for constructor signatures.
     }
 }
