@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ls.Domain.Tests.Builders;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -26,16 +27,17 @@ namespace Ls.Domain.Tests
             {
                 // Arrange
                 var path = "C:\\";
+                var files = new List<FsFile>
+                {
+                    FsFileTestDataBuilder.Create().WithName("a.txt").Build(),
+                    FsFileTestDataBuilder.Create().WithName("b.exe").Build(),
+                    FsFileTestDataBuilder.Create().WithName("c.dat").Build()
+                };
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
                 var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(new List<FsFile>
-                {
-                    new FsFile { Name = "a.txt" },
-                    new FsFile { Name = "b.exe" },
-                    new FsFile { Name = "c.dat" }
-                });
+                fileSystemGateway.Files(path).Returns(files);
                 fileSystemGateway.Directories(path).Returns(new List<FsDirectory>());
                 
                 var lsUseCase = new LsUseCase(fileSystemGateway);
@@ -55,17 +57,18 @@ namespace Ls.Domain.Tests
             {
                 // Arrange
                 var path = "D:\\somewhere";
+                var files = new List<FsFile>
+                {
+                    FsFileTestDataBuilder.Create().WithName("run.exe").Build(),
+                    FsFileTestDataBuilder.Create().WithName("yay.docx").Build(),
+                    FsFileTestDataBuilder.Create().WithName("cake.txt").Build(),
+                    FsFileTestDataBuilder.Create().WithName("isYummy.xlsx").Build()
+                };
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
                 var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(new List<FsFile>
-                {
-                    new FsFile { Name = "run.exe" },
-                    new FsFile { Name = "yay.docx" },
-                    new FsFile { Name = "cake.txt" },
-                    new FsFile { Name = "isYummy.xlsx" }
-                });
+                fileSystemGateway.Files(path).Returns(files);
                 fileSystemGateway.Directories(path).Returns(new List<FsDirectory>());
 
                 var lsUseCase = new LsUseCase(fileSystemGateway);
@@ -90,16 +93,17 @@ namespace Ls.Domain.Tests
             {
                 // Arrange
                 var path = "Z:\\";
+                var directories = new List<FsDirectory>{
+                    FsDirectoryTestDataBuilder.Create().WithName("cake recipes").Build(),
+                    FsDirectoryTestDataBuilder.Create().WithName("code").Build(),
+                    FsDirectoryTestDataBuilder.Create().WithName("talks").Build()
+                };
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
                 var fileSystemGateway = Substitute.For<IFileSystemGateway>();
                 fileSystemGateway.Files(path).Returns(new List<FsFile>());
-                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>{
-                    new FsDirectory { Name = "cake recipes" },
-                    new FsDirectory { Name = "code" },
-                    new FsDirectory { Name = "talks" }
-                });
+                fileSystemGateway.Directories(path).Returns(directories);
 
                 var lsUseCase = new LsUseCase(fileSystemGateway);
                 // Act
@@ -118,17 +122,18 @@ namespace Ls.Domain.Tests
             {
                 // Arrange
                 var path = "X:\\somewhere_else";
+                var directories = new List<FsDirectory>{
+                    FsDirectoryTestDataBuilder.Create().WithName("notes").Build(),
+                    FsDirectoryTestDataBuilder.Create().WithName("zebras").Build(),
+                    FsDirectoryTestDataBuilder.Create().WithName("memes").Build(),
+                    FsDirectoryTestDataBuilder.Create().WithName("books").Build()
+                };
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
                 var fileSystemGateway = Substitute.For<IFileSystemGateway>();
                 fileSystemGateway.Files(path).Returns(new List<FsFile>());
-                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>{
-                    new FsDirectory { Name = "notes" },
-                    new FsDirectory { Name = "zebras" },
-                    new FsDirectory { Name = "memes" },
-                    new FsDirectory { Name = "books" }
-                });
+                fileSystemGateway.Directories(path).Returns(directories);
 
                 var lsUseCase = new LsUseCase(fileSystemGateway);
                 // Act
@@ -152,18 +157,20 @@ namespace Ls.Domain.Tests
             {
                 // Arrange
                 var path = "M:\\documents";
+                var files = new List<FsFile>{
+                    FsFileTestDataBuilder.Create().WithName("stuff.exe").Build(),
+                    FsFileTestDataBuilder.Create().WithName("games.exe").Build()
+                };
+                var directories = new List<FsDirectory>{
+                    FsDirectoryTestDataBuilder.Create().WithName("unconference").Build(),
+                    FsDirectoryTestDataBuilder.Create().WithName("conference").Build()
+                };
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
                 var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(new List<FsFile>{
-                    new FsFile { Name = "stuff.txt" },
-                    new FsFile { Name = "games.exe" }
-                });
-                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>{
-                    new FsDirectory { Name = "unconference" },
-                    new FsDirectory { Name = "conference" }
-                });
+                fileSystemGateway.Files(path).Returns(files);
+                fileSystemGateway.Directories(path).Returns(directories);
 
                 var lsUseCase = new LsUseCase(fileSystemGateway);
                 // Act
@@ -173,7 +180,7 @@ namespace Ls.Domain.Tests
                     fsItems.Count() == 4 &&
                     fsItems.ElementAt(0).Name == "conference" &&
                     fsItems.ElementAt(1).Name == "games.exe" &&
-                    fsItems.ElementAt(2).Name == "stuff.txt" &&
+                    fsItems.ElementAt(2).Name == "stuff.exe" &&
                     fsItems.ElementAt(3).Name == "unconference"
                 ));
             }
@@ -203,7 +210,5 @@ namespace Ls.Domain.Tests
                 ));
             }
         }
-
-        // TODO Only directories in path
     }
 }
