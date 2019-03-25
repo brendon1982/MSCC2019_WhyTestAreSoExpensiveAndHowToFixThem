@@ -210,6 +210,31 @@ namespace Ls.Domain.Tests
             }
         }
         
+        [TestFixture]
+        public class Logging
+        {
+            [Test]
+            public void ShouldWritePathToLog()
+            {
+                // Arrange
+                var path = "E:\\";
+
+                var presenter = Substitute.For<IFsItemPresenter>();
+
+                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
+                fileSystemGateway.Files(path).Returns(new List<FsFile>());
+                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>());
+
+                var log = Substitute.For<ILog>();
+
+                var lsUseCase = new LsUseCase(fileSystemGateway, log);
+                // Act
+                lsUseCase.Execute(path, presenter);
+                // Assert
+                log.Received().Info(path);
+            }
+        }
+
         private static LsUseCase CreateLsUseCase(IFileSystemGateway fileSystemGateway)
         {
             return new LsUseCase(fileSystemGateway);
