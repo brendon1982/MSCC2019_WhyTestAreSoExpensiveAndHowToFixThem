@@ -229,11 +229,13 @@ namespace Ls.Domain.Tests
 
         private static LsUseCase CreateLsUseCase(string path, List<FsFile> files, List<FsDirectory> directories, ILog log)
         {
-            var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-            fileSystemGateway.Files(path).Returns(files);
-            fileSystemGateway.Directories(path).Returns(directories);
+            var filesGateway = Substitute.For<IFilesGateway>();
+            filesGateway.Files(path).Returns(files);
 
-            return new LsUseCase(fileSystemGateway, log);
+            var directoriesGateway = Substitute.For<IDirectoriesGateway>();
+            directoriesGateway.Directories(path).Returns(directories);
+
+            return new LsUseCase(filesGateway, directoriesGateway, log);
         }
     }
 }
