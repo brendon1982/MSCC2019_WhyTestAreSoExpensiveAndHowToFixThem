@@ -4,26 +4,24 @@ namespace Ls.Domain
 {
     public class LsUseCase
     {
-        private readonly IFilesGateway _filesGateway;
-        private readonly ILog _log;
-        private readonly IDirectoriesGateway _directoriesGateway;
+        private readonly IFileSystemGateway _fileSystemGateway;
+        private ILog _log;
 
-        public LsUseCase(IFilesGateway filesGateway, IDirectoriesGateway directoriesGateway, ILog log)
+        public LsUseCase(IFileSystemGateway fileSystemGateway, ILog log)
         {
-            _directoriesGateway = directoriesGateway;
             _log = log;
-            _filesGateway = filesGateway;
+            _fileSystemGateway = fileSystemGateway;
         }
 
         public void Execute(string path, IFsItemPresenter presenter)
         {
             _log.Info(path);
 
-            var files = _filesGateway
+            var files = _fileSystemGateway
                 .Files(path)
                 .OfType<IFsItem>();
 
-            var directories = _directoriesGateway
+            var directories = _fileSystemGateway
                 .Directories(path)
                 .OfType<IFsItem>();
 
