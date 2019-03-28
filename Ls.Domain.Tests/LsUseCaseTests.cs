@@ -35,11 +35,7 @@ namespace Ls.Domain.Tests
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
-                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(files);
-                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>());
-
-                var lsUseCase = CreateLsUseCase(fileSystemGateway);
+                var lsUseCase = CreateLsUseCase(path, files);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
@@ -66,11 +62,7 @@ namespace Ls.Domain.Tests
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
-                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(files);
-                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>());
-
-                var lsUseCase = CreateLsUseCase(fileSystemGateway);
+                var lsUseCase = CreateLsUseCase(path, files);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
@@ -100,11 +92,7 @@ namespace Ls.Domain.Tests
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
-                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(new List<FsFile>());
-                fileSystemGateway.Directories(path).Returns(directories);
-
-                var lsUseCase = CreateLsUseCase(fileSystemGateway);
+                var lsUseCase = CreateLsUseCase(path, directories);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
@@ -130,11 +118,7 @@ namespace Ls.Domain.Tests
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
-                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(new List<FsFile>());
-                fileSystemGateway.Directories(path).Returns(directories);
-
-                var lsUseCase = CreateLsUseCase(fileSystemGateway);
+                var lsUseCase = CreateLsUseCase(path, directories);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
@@ -167,11 +151,7 @@ namespace Ls.Domain.Tests
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
-                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(files);
-                fileSystemGateway.Directories(path).Returns(directories);
-
-                var lsUseCase = CreateLsUseCase(fileSystemGateway);
+                var lsUseCase = CreateLsUseCase(path, files, directories);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
@@ -196,11 +176,7 @@ namespace Ls.Domain.Tests
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
-                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(new List<FsFile>());
-                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>());
-
-                var lsUseCase = CreateLsUseCase(fileSystemGateway);
+                var lsUseCase = CreateLsUseCase(path, new List<FsFile>(), new List<FsDirectory>());
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
@@ -221,13 +197,9 @@ namespace Ls.Domain.Tests
 
                 var presenter = Substitute.For<IFsItemPresenter>();
 
-                var fileSystemGateway = Substitute.For<IFileSystemGateway>();
-                fileSystemGateway.Files(path).Returns(new List<FsFile>());
-                fileSystemGateway.Directories(path).Returns(new List<FsDirectory>());
-
                 var log = Substitute.For<ILog>();
 
-                var lsUseCase = CreateLsUseCase(fileSystemGateway, log);
+                var lsUseCase = CreateLsUseCase(log);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
@@ -235,13 +207,32 @@ namespace Ls.Domain.Tests
             }
         }
 
-        private static LsUseCase CreateLsUseCase(IFileSystemGateway fileSystemGateway)
+        private static LsUseCase CreateLsUseCase(string path, List<FsFile> files, List<FsDirectory> directories)
         {
-            return CreateLsUseCase(fileSystemGateway, Substitute.For<ILog>());
+            return CreateLsUseCase(path, files, directories, Substitute.For<ILog>());
         }
 
-        private static LsUseCase CreateLsUseCase(IFileSystemGateway fileSystemGateway, ILog log)
+        private static LsUseCase CreateLsUseCase(string path, List<FsFile> files)
         {
+            return CreateLsUseCase(path, files, new List<FsDirectory>(), Substitute.For<ILog>());
+        }
+
+        private static LsUseCase CreateLsUseCase(string path, List<FsDirectory> directories)
+        {
+            return CreateLsUseCase(path, new List<FsFile>(), directories, Substitute.For<ILog>());
+        }
+
+        private static LsUseCase CreateLsUseCase(ILog log)
+        {
+            return CreateLsUseCase("C:\\", new List<FsFile>(), new List<FsDirectory>(), log);
+        }
+
+        private static LsUseCase CreateLsUseCase(string path, List<FsFile> files, List<FsDirectory> directories, ILog log)
+        {
+            var fileSystemGateway = Substitute.For<IFileSystemGateway>();
+            fileSystemGateway.Files(path).Returns(files);
+            fileSystemGateway.Directories(path).Returns(directories);
+
             return new LsUseCase(fileSystemGateway, log);
         }
     }
