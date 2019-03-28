@@ -2,9 +2,8 @@
 
 namespace Ls.Domain
 {
-    public interface IFileSystemGateway
+    public interface IFilesGateway
     {
         IEnumerable<FsFile> Files(string path);
-        IEnumerable<FsDirectory> Directories(string path);
     }
 }
