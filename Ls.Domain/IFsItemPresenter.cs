@@ -4,6 +4,6 @@ namespace Ls.Domain
 {
     public interface IFsItemPresenter
     {
-        void Respond(IEnumerable<IFsItem> output, string error);
+        void Respond(IEnumerable<IFsItem> output);
     }
 }
