@@ -14,7 +14,7 @@ namespace Ls.Domain
         {
             if (name.Contains('.'))
             {
-                return name.Reverse().TakeWhile(c => c != '.').Reverse().ToString();
+                return new string(name.Reverse().TakeWhile(c => c != '.').Reverse().ToArray());
             }
 
             return "";
