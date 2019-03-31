@@ -5,6 +5,7 @@ using NExpect;
 using NSubstitute;
 using NUnit.Framework;
 using static NExpect.Expectations;
+using PeanutButter.RandomGenerators;
 
 namespace Ls.Domain.Tests
 {
@@ -217,6 +218,45 @@ namespace Ls.Domain.Tests
             }
         }
 
+        [TestFixture]
+        public class Errors
+        {
+            [Test]
+            public void WhenThereIsAnErrorReadingFiles_ShouldRespondWithThatError()
+            {
+                // Arrange
+                var path = "E:\\";
+                var error = RandomValueGen.GetRandomString();
+
+                string actualError = null;
+                var presenter = SubstituteFsItemPresenterBuilder.Create()
+                    .WithErrorSnapshot(e => actualError = e)
+                    .Build();
+
+                var lsUseCase = CreateLsUseCaseWithFilesError(path, error);
+                // Act
+                lsUseCase.Execute(path, presenter);
+                // Assert
+                Expect(actualError).To.Be.Equal.To(error);
+            }
+
+            [Test]
+            public void WhenThereIsAnErrorReadingDirectories_ShouldRespondWithThatError()
+            {
+                // Arrange
+                var path = "R:\\";
+                var error = RandomValueGen.GetRandomString();
+
+                var presenter = Substitute.For<IFsItemPresenter>();
+
+                var lsUseCase = CreateLsUseCaseWithDirectoriesError(path, error);
+                // Act
+                lsUseCase.Execute(path, presenter);
+                // Assert
+                presenter.Received().Respond(Arg.Any<IEnumerable<IFsItem>>(), error);
+            }
+        }
+
         private static LsUseCase CreateLsUseCase(string path, List<FsFile> files)
         {
             return CreateLsUseCase(path, files, new List<FsDirectory>());
@@ -249,6 +289,30 @@ namespace Ls.Domain.Tests
                 .Build();
 
             return new LsUseCase(filesGateway, directoriesGateway, log);
+        }
+
+        private static LsUseCase CreateLsUseCaseWithFilesError(string path, string error)
+        {
+            var filesGateway = SubstituteFilesGatewayBuilder.Create()
+                .WithError(path, error)
+                .Build();
+
+            var directoriesGateway = SubstituteDirectoriesGatewayBuilder.Create()
+                .Build();
+
+            return new LsUseCase(filesGateway, directoriesGateway, Substitute.For<ILog>());
+        }
+
+        private static LsUseCase CreateLsUseCaseWithDirectoriesError(string path, string error)
+        {
+            var filesGateway = SubstituteFilesGatewayBuilder.Create()
+                .Build();
+
+            var directoriesGateway = SubstituteDirectoriesGatewayBuilder.Create()
+                .WithError(path, error)
+                .Build();
+
+            return new LsUseCase(filesGateway, directoriesGateway, Substitute.For<ILog>());
         }
 
     }

@@ -8,6 +8,7 @@ namespace Ls.Domain.Tests.Builders
     public class SubstituteFsItemPresenterBuilder
     {
         private Action<List<IFsItem>> _fsItemsSnapshot;
+        private Action<string> _errorSnapshot;
 
         public static SubstituteFsItemPresenterBuilder Create()
         {
@@ -18,6 +19,12 @@ namespace Ls.Domain.Tests.Builders
         {
             _fsItemsSnapshot = fsItemsSnapshot;
 
+            return this;
+        }
+
+        public SubstituteFsItemPresenterBuilder WithErrorSnapshot(Action<string> errorSnapshot)
+        {
+            _errorSnapshot = errorSnapshot;
             return this;
         }
 
