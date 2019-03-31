@@ -31,7 +31,7 @@ namespace Ls.Domain
                 .Concat(directories)
                 .OrderBy(item => item.Name);
 
-            //presenter.Respond(fsItems);
+            presenter.Respond(fsItems);
         }
     }
 }
