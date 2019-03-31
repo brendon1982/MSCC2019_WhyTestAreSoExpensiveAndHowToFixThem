@@ -4,6 +4,7 @@ using Ls.Domain.Tests.Builders;
 using NExpect;
 using NSubstitute;
 using NUnit.Framework;
+using static NExpect.Expectations;
 
 namespace Ls.Domain.Tests
 {
@@ -43,10 +44,7 @@ namespace Ls.Domain.Tests
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                Assert.That(actualFiles[0].Name, Is.EqualTo("a.txt"));
-                Assert.That(actualFiles[1].Name, Is.EqualTo("b.exe"));
-                Assert.That(actualFiles[2].Name, Is.EqualTo("c.dat"));
-                Assert.That(actualFiles.Count, Is.EqualTo(3));
+                Expect(actualFiles).To.Deep.Equal(files);
             }
 
             [Test]
@@ -54,12 +52,14 @@ namespace Ls.Domain.Tests
             {
                 // Arrange
                 var path = "D:\\somewhere";
+
+                var runExe = FsFileTestDataBuilder.Create().WithName("run.exe").Build();
+                var yayDocx = FsFileTestDataBuilder.Create().WithName("yay.docx").Build();
+                var cakeTxt = FsFileTestDataBuilder.Create().WithName("cake.txt").Build();
+                var isYummyXlsx = FsFileTestDataBuilder.Create().WithName("isYummy.xlsx").Build();
                 var files = new List<FsFile>
                 {
-                    FsFileTestDataBuilder.Create().WithName("run.exe").Build(),
-                    FsFileTestDataBuilder.Create().WithName("yay.docx").Build(),
-                    FsFileTestDataBuilder.Create().WithName("cake.txt").Build(),
-                    FsFileTestDataBuilder.Create().WithName("isYummy.xlsx").Build()
+                    runExe, yayDocx, cakeTxt, isYummyXlsx
                 };
 
                 List<IFsItem> actualFiles = null;
@@ -71,11 +71,10 @@ namespace Ls.Domain.Tests
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                Assert.That(actualFiles[0].Name, Is.EqualTo("cake.txt"));
-                Assert.That(actualFiles[1].Name, Is.EqualTo("isYummy.xlsx"));
-                Assert.That(actualFiles[2].Name, Is.EqualTo("run.exe"));
-                Assert.That(actualFiles[3].Name, Is.EqualTo("yay.docx"));
-                Assert.That(actualFiles.Count, Is.EqualTo(4));
+                Expect(actualFiles).To.Deep.Equal(new List<FsFile>
+                {
+                    cakeTxt, isYummyXlsx, runExe, yayDocx
+                });
             }
         }
 
@@ -102,10 +101,7 @@ namespace Ls.Domain.Tests
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                Assert.That(actualDirectories[0].Name, Is.EqualTo("cake recipes"));
-                Assert.That(actualDirectories[1].Name, Is.EqualTo("code"));
-                Assert.That(actualDirectories[2].Name, Is.EqualTo("talks"));
-                Assert.That(actualDirectories.Count, Is.EqualTo(3));
+                Expect(actualDirectories).To.Deep.Equal(directories);
             }
 
             [Test]
@@ -113,11 +109,14 @@ namespace Ls.Domain.Tests
             {
                 // Arrange
                 var path = "X:\\somewhere_else";
-                var directories = new List<FsDirectory>{
-                    FsDirectoryTestDataBuilder.Create().WithName("notes").Build(),
-                    FsDirectoryTestDataBuilder.Create().WithName("zebras").Build(),
-                    FsDirectoryTestDataBuilder.Create().WithName("memes").Build(),
-                    FsDirectoryTestDataBuilder.Create().WithName("books").Build()
+
+                var notes = FsDirectoryTestDataBuilder.Create().WithName("notes").Build();
+                var zebras = FsDirectoryTestDataBuilder.Create().WithName("zebras").Build();
+                var memes = FsDirectoryTestDataBuilder.Create().WithName("memes").Build();
+                var books = FsDirectoryTestDataBuilder.Create().WithName("books").Build();
+                var directories = new List<FsDirectory>
+                {
+                    notes, zebras, memes, books
                 };
 
                 List<IFsItem> actualDirectories = null;
@@ -129,11 +128,10 @@ namespace Ls.Domain.Tests
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                Assert.That(actualDirectories[0].Name, Is.EqualTo("books"));
-                Assert.That(actualDirectories[1].Name, Is.EqualTo("memes"));
-                Assert.That(actualDirectories[2].Name, Is.EqualTo("notes"));
-                Assert.That(actualDirectories[3].Name, Is.EqualTo("zebras"));
-                Assert.That(actualDirectories.Count, Is.EqualTo(4));
+                Expect(actualDirectories).To.Deep.Equal(new List<IFsItem>
+                {
+                    books, memes, notes, zebras
+                });
             }
         }
 
@@ -145,13 +143,19 @@ namespace Ls.Domain.Tests
             {
                 // Arrange
                 var path = "M:\\documents";
-                var files = new List<FsFile>{
-                    FsFileTestDataBuilder.Create().WithName("stuff.exe").Build(),
-                    FsFileTestDataBuilder.Create().WithName("games.exe").Build()
+
+                var stuffExeFile = FsFileTestDataBuilder.Create().WithName("stuff.exe").Build();
+                var gamesExeFile = FsFileTestDataBuilder.Create().WithName("games.exe").Build();
+                var files = new List<FsFile>
+                {
+                    stuffExeFile, gamesExeFile
                 };
-                var directories = new List<FsDirectory>{
-                    FsDirectoryTestDataBuilder.Create().WithName("unconference").Build(),
-                    FsDirectoryTestDataBuilder.Create().WithName("conference").Build()
+
+                var unconferenceDirectory = FsDirectoryTestDataBuilder.Create().WithName("unconference").Build();
+                var conferenceDirectory = FsDirectoryTestDataBuilder.Create().WithName("conference").Build();
+                var directories = new List<FsDirectory>
+                {
+                    unconferenceDirectory, conferenceDirectory
                 };
 
                 List<IFsItem> actualFsItems = null;
@@ -163,11 +167,10 @@ namespace Ls.Domain.Tests
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                Assert.That(actualFsItems[0].Name, Is.EqualTo("conference"));
-                Assert.That(actualFsItems[1].Name, Is.EqualTo("games.exe"));
-                Assert.That(actualFsItems[2].Name, Is.EqualTo("stuff.exe"));
-                Assert.That(actualFsItems[3].Name, Is.EqualTo("unconference"));
-                Assert.That(actualFsItems.Count, Is.EqualTo(4));
+                Expect(actualFsItems).To.Deep.Equal(new List<IFsItem>
+                {
+                    conferenceDirectory, gamesExeFile, stuffExeFile, unconferenceDirectory
+                });
             }
         }
 
@@ -189,7 +192,7 @@ namespace Ls.Domain.Tests
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                Assert.That(actualFsItems.Count, Is.EqualTo(0));
+                Expect(actualFsItems).To.Be.Empty();
             }
         }
         
