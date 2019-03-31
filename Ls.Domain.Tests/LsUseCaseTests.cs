@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Ls.Domain.Tests.Builders;
+using NExpect;
 using NSubstitute;
 using NUnit.Framework;
 
@@ -33,18 +34,19 @@ namespace Ls.Domain.Tests
                     FsFileTestDataBuilder.Create().WithName("c.dat").Build()
                 };
 
-                var presenter = Substitute.For<IFsItemPresenter>();
+                List<IFsItem> actualFiles = null;
+                var presenter = SubstituteFsItemPresenterBuilder.Create()
+                    .WithFsItemsSnapshot(f => actualFiles = f)
+                    .Build();
 
                 var lsUseCase = CreateLsUseCase(path, files);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems => 
-                    fsItems.Count() == 3 && 
-                    fsItems.ElementAt(0).Name == "a.txt" &&
-                    fsItems.ElementAt(1).Name == "b.exe" &&
-                    fsItems.ElementAt(2).Name == "c.dat"
-                ));
+                Assert.That(actualFiles[0].Name, Is.EqualTo("a.txt"));
+                Assert.That(actualFiles[1].Name, Is.EqualTo("b.exe"));
+                Assert.That(actualFiles[2].Name, Is.EqualTo("c.dat"));
+                Assert.That(actualFiles.Count, Is.EqualTo(3));
             }
 
             [Test]
@@ -60,19 +62,20 @@ namespace Ls.Domain.Tests
                     FsFileTestDataBuilder.Create().WithName("isYummy.xlsx").Build()
                 };
 
-                var presenter = Substitute.For<IFsItemPresenter>();
+                List<IFsItem> actualFiles = null;
+                var presenter = SubstituteFsItemPresenterBuilder.Create()
+                    .WithFsItemsSnapshot(f => actualFiles = f)
+                    .Build();
 
                 var lsUseCase = CreateLsUseCase(path, files);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems =>
-                    fsItems.Count() == 4 &&
-                    fsItems.ElementAt(0).Name == "cake.txt" &&
-                    fsItems.ElementAt(1).Name == "isYummy.xlsx" &&
-                    fsItems.ElementAt(2).Name == "run.exe" &&
-                    fsItems.ElementAt(3).Name == "yay.docx"
-                ));
+                Assert.That(actualFiles[0].Name, Is.EqualTo("cake.txt"));
+                Assert.That(actualFiles[1].Name, Is.EqualTo("isYummy.xlsx"));
+                Assert.That(actualFiles[2].Name, Is.EqualTo("run.exe"));
+                Assert.That(actualFiles[3].Name, Is.EqualTo("yay.docx"));
+                Assert.That(actualFiles.Count, Is.EqualTo(4));
             }
         }
 
@@ -90,18 +93,19 @@ namespace Ls.Domain.Tests
                     FsDirectoryTestDataBuilder.Create().WithName("talks").Build()
                 };
 
-                var presenter = Substitute.For<IFsItemPresenter>();
+                List<IFsItem> actualDirectories = null;
+                var presenter = SubstituteFsItemPresenterBuilder.Create()
+                    .WithFsItemsSnapshot(f => actualDirectories = f)
+                    .Build();
 
                 var lsUseCase = CreateLsUseCase(path, directories);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems =>
-                    fsItems.Count() == 3 &&
-                    fsItems.ElementAt(0).Name == "cake recipes" &&
-                    fsItems.ElementAt(1).Name == "code" &&
-                    fsItems.ElementAt(2).Name == "talks"
-                ));
+                Assert.That(actualDirectories[0].Name, Is.EqualTo("cake recipes"));
+                Assert.That(actualDirectories[1].Name, Is.EqualTo("code"));
+                Assert.That(actualDirectories[2].Name, Is.EqualTo("talks"));
+                Assert.That(actualDirectories.Count, Is.EqualTo(3));
             }
 
             [Test]
@@ -116,19 +120,20 @@ namespace Ls.Domain.Tests
                     FsDirectoryTestDataBuilder.Create().WithName("books").Build()
                 };
 
-                var presenter = Substitute.For<IFsItemPresenter>();
+                List<IFsItem> actualDirectories = null;
+                var presenter = SubstituteFsItemPresenterBuilder.Create()
+                    .WithFsItemsSnapshot(f => actualDirectories = f)
+                    .Build();
 
                 var lsUseCase = CreateLsUseCase(path, directories);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems =>
-                    fsItems.Count() == 4 &&
-                    fsItems.ElementAt(0).Name == "books" &&
-                    fsItems.ElementAt(1).Name == "memes" &&
-                    fsItems.ElementAt(2).Name == "notes" &&
-                    fsItems.ElementAt(3).Name == "zebras"
-                ));
+                Assert.That(actualDirectories[0].Name, Is.EqualTo("books"));
+                Assert.That(actualDirectories[1].Name, Is.EqualTo("memes"));
+                Assert.That(actualDirectories[2].Name, Is.EqualTo("notes"));
+                Assert.That(actualDirectories[3].Name, Is.EqualTo("zebras"));
+                Assert.That(actualDirectories.Count, Is.EqualTo(4));
             }
         }
 
@@ -149,19 +154,20 @@ namespace Ls.Domain.Tests
                     FsDirectoryTestDataBuilder.Create().WithName("conference").Build()
                 };
 
-                var presenter = Substitute.For<IFsItemPresenter>();
+                List<IFsItem> actualFsItems = null;
+                var presenter = SubstituteFsItemPresenterBuilder.Create()
+                    .WithFsItemsSnapshot(f => actualFsItems = f)
+                    .Build();
 
                 var lsUseCase = CreateLsUseCase(path, files, directories);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems =>
-                    fsItems.Count() == 4 &&
-                    fsItems.ElementAt(0).Name == "conference" &&
-                    fsItems.ElementAt(1).Name == "games.exe" &&
-                    fsItems.ElementAt(2).Name == "stuff.exe" &&
-                    fsItems.ElementAt(3).Name == "unconference"
-                ));
+                Assert.That(actualFsItems[0].Name, Is.EqualTo("conference"));
+                Assert.That(actualFsItems[1].Name, Is.EqualTo("games.exe"));
+                Assert.That(actualFsItems[2].Name, Is.EqualTo("stuff.exe"));
+                Assert.That(actualFsItems[3].Name, Is.EqualTo("unconference"));
+                Assert.That(actualFsItems.Count, Is.EqualTo(4));
             }
         }
 
@@ -174,15 +180,16 @@ namespace Ls.Domain.Tests
                 // Arrange
                 var path = "E:\\";
 
-                var presenter = Substitute.For<IFsItemPresenter>();
+                List<IFsItem> actualFsItems = null;
+                var presenter = SubstituteFsItemPresenterBuilder.Create()
+                    .WithFsItemsSnapshot(f => actualFsItems = f)
+                    .Build();
 
                 var lsUseCase = CreateLsUseCase(path, new List<FsFile>(), new List<FsDirectory>());
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                presenter.Received().Respond(Arg.Is<IEnumerable<IFsItem>>(fsItems =>
-                    !fsItems.Any()
-                ));
+                Assert.That(actualFsItems.Count, Is.EqualTo(0));
             }
         }
         

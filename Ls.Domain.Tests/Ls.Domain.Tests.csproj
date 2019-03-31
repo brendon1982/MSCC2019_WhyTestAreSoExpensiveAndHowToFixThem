@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+    <PackageReference Include="nexpect" Version="1.0.136" />
     <PackageReference Include="nsubstitute" Version="4.0.0" />
     <PackageReference Include="nunit" Version="3.11.0" />
     <PackageReference Include="nunit3testadapter" Version="3.13.0" />
