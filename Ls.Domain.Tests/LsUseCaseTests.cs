@@ -207,27 +207,17 @@ namespace Ls.Domain.Tests
             }
         }
 
-        private static LsUseCase CreateLsUseCase(string path, List<FsFile> files, List<FsDirectory> directories)
-        {
-            return CreateLsUseCase(path, files, directories, Substitute.For<ILog>());
-        }
-
         private static LsUseCase CreateLsUseCase(string path, List<FsFile> files)
         {
-            return CreateLsUseCase(path, files, new List<FsDirectory>(), Substitute.For<ILog>());
+            return CreateLsUseCase(path, files, new List<FsDirectory>());
         }
 
         private static LsUseCase CreateLsUseCase(string path, List<FsDirectory> directories)
         {
-            return CreateLsUseCase(path, new List<FsFile>(), directories, Substitute.For<ILog>());
+            return CreateLsUseCase(path, new List<FsFile>(), directories);
         }
 
-        private static LsUseCase CreateLsUseCase(ILog log)
-        {
-            return CreateLsUseCase("C:\\", new List<FsFile>(), new List<FsDirectory>(), log);
-        }
-
-        private static LsUseCase CreateLsUseCase(string path, List<FsFile> files, List<FsDirectory> directories, ILog log)
+        private static LsUseCase CreateLsUseCase(string path, List<FsFile> files, List<FsDirectory> directories)
         {
             var filesGateway = SubstituteFilesGatewayBuilder.Create()
                 .WithFiles(path, files)
@@ -237,7 +227,19 @@ namespace Ls.Domain.Tests
                 .WithDirectories(path, directories)
                 .Build();
 
+            return new LsUseCase(filesGateway, directoriesGateway, Substitute.For<ILog>());
+        }
+
+        private static LsUseCase CreateLsUseCase(ILog log)
+        {
+            var filesGateway = SubstituteFilesGatewayBuilder.Create()
+                .Build();
+
+            var directoriesGateway = SubstituteDirectoriesGatewayBuilder.Create()
+                .Build();
+
             return new LsUseCase(filesGateway, directoriesGateway, log);
         }
+
     }
 }
