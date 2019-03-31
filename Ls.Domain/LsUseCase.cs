@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Ls.Domain
 {
@@ -19,6 +21,18 @@ namespace Ls.Domain
         {
             _log.Info(path);
 
+            try
+            {
+                presenter.Respond(OrderedFilesAndDirectories(path), null);
+            }
+            catch (Exception e)
+            {
+                presenter.Respond(new List<IFsItem>(), e.Message);
+            }
+        }
+
+        private IOrderedEnumerable<IFsItem> OrderedFilesAndDirectories(string path)
+        {
             var files = _filesGateway
                 .Files(path)
                 .OfType<IFsItem>();
@@ -31,7 +45,7 @@ namespace Ls.Domain
                 .Concat(directories)
                 .OrderBy(item => item.Name);
 
-            presenter.Respond(fsItems);
+            return fsItems;
         }
     }
 }

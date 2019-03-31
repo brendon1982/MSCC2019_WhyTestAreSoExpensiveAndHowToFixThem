@@ -247,13 +247,16 @@ namespace Ls.Domain.Tests
                 var path = "R:\\";
                 var error = RandomValueGen.GetRandomString();
 
-                var presenter = Substitute.For<IFsItemPresenter>();
+                string actualError = null;
+                var presenter = SubstituteFsItemPresenterBuilder.Create()
+                    .WithErrorSnapshot(e => actualError = e)
+                    .Build();
 
                 var lsUseCase = CreateLsUseCaseWithDirectoriesError(path, error);
                 // Act
                 lsUseCase.Execute(path, presenter);
                 // Assert
-                presenter.Received().Respond(Arg.Any<IEnumerable<IFsItem>>(), error);
+                Expect(actualError).To.Be.Equal.To(error);
             }
         }
 
